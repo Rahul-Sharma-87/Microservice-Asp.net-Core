@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using QueueManagement;
 
 namespace OrderManagementMicroservice.Controllers {
+
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase {
@@ -28,11 +29,23 @@ namespace OrderManagementMicroservice.Controllers {
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] Order value) {
-            value.OrderId = _ordersModel.AddOrder(value);
+        public ActionResult<Order> Post([FromBody] Order order) {
+            order.OrderId = _ordersModel.AddOrder(order);
             _rabbitManager.Publish(
-                value, _brokerConfigInfo.ExchangeName, "topic",_brokerConfigInfo.RouteKey);
+                order, _brokerConfigInfo.ExchangeName, "topic",_brokerConfigInfo.RouteKey);
+            return CreatedAtAction(
+                nameof(GetById), 
+                new { id = order.OrderId }, 
+                order);
         }
 
+        [HttpGet]
+        public ActionResult<Order> GetById(int id) {
+            if (id == 0) {
+                return null;
+            }
+            var order = _ordersModel.GetOrderById(id);
+            return Ok(order);
+        }
     }
 }

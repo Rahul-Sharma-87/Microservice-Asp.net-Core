@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+    customer:
+        build:
+            context: .
+            dockerfile: dockerfile.customermaster
+        ports:
+            - "8080:80"
+        expose:
+          - "8080"
+    
+    product:
+        build:
+            context: .
+            dockerfile: dockerfile.productmanagement
+        ports:
+            - "8085:80"
+        expose:
+          - "8085"
+    
+    order:
+        build:
+            context: .
+            dockerfile: dockerfile.ordermanagement
+        environment:
+            - rabbit__HostName="rabbit-queue"
+            - rabbit__Username="guest"
+            - rabbit__Password="guest"
+            - rabbit__VHost="/"
+            - rabbit__Port="5672"
+            - QueueInfo__ExchangeName="Order.invoice.exchange"
+            - QueueInfo__QueueName="Order.invoice.exchange.queue"
+            - QueueInfo__RouteKey="Order.invoice.exchange.queue.neworder"
+            - QueueInfo__ExchangeType="/"
+            
+        ports:
+            - "8090:80"
+        expose:
+          - "8090"
+        depends_on:
+          - rabbit-mq
+          
+    rabbit-mq:
+        image: rabbitmq:3.7.6-management
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        expose:
+          - "5672"
+          - "15672"
+            

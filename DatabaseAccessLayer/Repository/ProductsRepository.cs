@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using DatabaseAccessLayer.Model;
 
@@ -12,6 +11,8 @@ namespace DatabaseAccessLayer.Repository {
         /// Add product
         /// </summary>
         long Add(object value);
+
+        object GetObjectById(long id);
     }
 
     public class ProductsRepository: IDatabaseRepository {
@@ -74,6 +75,21 @@ namespace DatabaseAccessLayer.Repository {
                 tableName, 
                 GetProductsTableSchema(), 
                 valueCollection);
+        }
+
+        public object GetObjectById(long id) {
+            var valueCollection =
+                _dbOperations.GetDataById(tableName, GetProductsTableSchema(), id);
+            Product product = new Product {
+                ProductId = long.Parse(valueCollection["Id"].ToString()),
+                Name = valueCollection[nameof(Product.Name)].ToString(),
+                Category = valueCollection[nameof(Product.Category)].ToString(),
+                Description = valueCollection[nameof(Product.Description)].ToString(),
+                Origin = valueCollection[nameof(Product.Origin)].ToString(),
+                Warranty = int.Parse(valueCollection[nameof(Product.Warranty)].ToString()),
+                MRP = double.Parse(valueCollection[nameof(Product.MRP)].ToString())
+            };
+            return product;
         }
     }
 }

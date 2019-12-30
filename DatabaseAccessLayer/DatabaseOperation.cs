@@ -150,9 +150,32 @@ namespace DatabaseAccessLayer {
 
         }
 
-        public void GetDataById()
-        {
-
+        public IDictionary<string, object> GetDataById(
+            string tableName, 
+            List<Tuple<string, SupportedDataTypes, int>> tableSchemas,
+            long Id
+        ) {
+            IDictionary<string, object> valueCollection = 
+                new Dictionary<string, object>();
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.AppendLine($"SELECT * FROM {tableName} WHERE Id={Id}");
+            try {
+                _dbConnection.Open();
+                using (SQLiteCommand command =
+                    new SQLiteCommand(sqlBuilder.ToString(), _dbConnection)) {
+                    command.CommandType = CommandType.Text;
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        valueCollection["Id"] = reader["Id"];
+                        foreach (var tableSchema in tableSchemas) {
+                            valueCollection[tableSchema.Item1] = reader[tableSchema.Item1];
+                        }
+                    }
+                }
+            } finally {
+                _dbConnection.Close();
+            }
+            return valueCollection;
         }
     }
 }

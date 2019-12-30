@@ -14,17 +14,12 @@ namespace AccountsMicroservice.Models {
             _productRepository = databaseRepository;
         }
 
-        public void AddProduct(Product product) {
-            _productRepository.Add(product);
+        public long AddProduct(Product product) {
+            return _productRepository.Add(product);
         }
 
-        public void UpdateProduct(Product product)
-        {
-
-        }
-
-        public void DeleteProduct() {
-
+        internal Product GetProductById(int id) {
+            return _productRepository.GetObjectById(id) as Product;
         }
     }
 }

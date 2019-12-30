@@ -31,6 +31,7 @@ namespace QueueManagement {
         public IModel Create() {
             return _connection.CreateModel();
         }
+
         /// <summary>
         /// The Return method tells the pool that if the channel object
         /// is still in a state that can be used, we should return it to the pool;

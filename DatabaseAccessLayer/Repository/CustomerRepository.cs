@@ -54,5 +54,18 @@ namespace DatabaseAccessLayer.Repository {
                 GetCustomerTableSchema(),
                 valueCollection);
         }
+
+        public object GetObjectById(long id) {
+            var valueCollection = 
+                _dbOperations.GetDataById(tableName, GetCustomerTableSchema(), id);
+            Customer customer = new Customer {
+                CustomerId = long.Parse(valueCollection["Id"].ToString()),
+                Name = valueCollection[nameof(Customer.Name)].ToString(),
+                Gender = Enum.Parse<Gender>(valueCollection[nameof(Customer.Gender)].ToString()),
+                EmailAddress = valueCollection[nameof(Customer.EmailAddress)].ToString(),
+                PrimaryPhone = valueCollection[nameof(Customer.PrimaryPhone)].ToString()
+            };
+            return customer;
+        }
     }
 }

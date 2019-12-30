@@ -1,4 +1,5 @@
-﻿using DatabaseAccessLayer.Model;
+﻿using System;
+using DatabaseAccessLayer.Model;
 using DatabaseAccessLayer.Repository;
 
 namespace OrderManagementMicroservice.Models {
@@ -12,6 +13,11 @@ namespace OrderManagementMicroservice.Models {
 
         public long AddOrder(Order order) {
             return _orderRepository.Add(order);
+        }
+
+        internal object GetOrderById(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

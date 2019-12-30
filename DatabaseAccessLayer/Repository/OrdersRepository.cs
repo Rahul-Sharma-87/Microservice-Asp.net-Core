@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using DatabaseAccessLayer.Model;
 
 namespace DatabaseAccessLayer.Repository {
@@ -57,11 +56,24 @@ namespace DatabaseAccessLayer.Repository {
             valueCollection[nameof(Order.Quantity)] = order.Quantity;
             valueCollection[nameof(Order.Discount)] = order.Discount;
             valueCollection[nameof(Order.TotalPrice)] = order.TotalPrice;
-
             return _dbOperations.InsertData(
                 tableName,
                 GetOrdersTableSchema(),
                 valueCollection);
+        }
+
+        public object GetObjectById(long id) {
+            var valueCollection =
+                _dbOperations.GetDataById(tableName, GetOrdersTableSchema(), id);
+            Order order = new Order {
+                OrderId = long.Parse(valueCollection["Id"].ToString()),
+                ProductId = long.Parse(valueCollection[nameof(Order.ProductId)].ToString()),
+                CustomerId = long.Parse(valueCollection[nameof(Order.CustomerId)].ToString()),
+                Quantity = int.Parse(valueCollection[nameof(Order.Quantity)].ToString()),
+                Discount = double.Parse(valueCollection[nameof(Order.Discount)].ToString()),
+                TotalPrice = double.Parse(valueCollection[nameof(Order.TotalPrice)].ToString())
+            };
+            return order;
         }
     }
 }

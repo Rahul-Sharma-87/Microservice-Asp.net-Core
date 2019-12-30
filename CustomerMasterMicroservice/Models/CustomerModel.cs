@@ -10,8 +10,13 @@ namespace CustomerMasterMicroservice.Models {
             _customerRepository = databaseRepository;
         }
 
-        public void AddCustomer(Customer customer) {
-            _customerRepository.Add(customer);
+        public Customer AddCustomer(Customer customer) {
+            customer.CustomerId = _customerRepository.Add(customer);
+            return customer;
+        }
+
+        public Customer GetCustomerById(long id) {
+            return _customerRepository.GetObjectById(id) as Customer;
         }
     }
 }
